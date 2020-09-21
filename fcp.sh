@@ -23,11 +23,10 @@ showCos() {
     # List all COS
     /opt/zimbra/bin/zmprov gac > /tmp/cos.zmprov
     # Get all COS IDS
-    while read cos; do echo -e "gc ${cos} zimbraId";done < /tmp/cos.zmprov|zmprov > /tmp/cosids.txt
-    for cos in $(zmprov gac); do
-        echo -ne "${cos}: "
-        /opt/zimbra/bin/zmprov gc ${cos} zimbraId | grep -oE "\w{8}\-(\w{4}\-){3}\w{12}"
-    done
+    while read cos;
+    do
+        echo -e "gc ${cos} zimbraId";
+    done < /tmp/cos.zmprov| zmprov |awk '(/name/ && ORS=" => ") || (/zimbraId:/ && ORS=RS)'
 }
 setExpire() {
     echo "Cleaning last run."
@@ -39,12 +38,14 @@ setExpire() {
         echo -ne "ma ${account} zimbraPasswordMustChange TRUE\n" >${FILETMP}
     done
     echo "Generating file operations finished."
-    echo "Executing file oprations to accounts in ${COS}"
-    /opt/zimbra/bin/zmprov <${FILETMP}
+    echo "Executing file operations to accounts in ${COS}."
+    /opt/zimbra/bin/zmprov < ${FILETMP}
     if [ $? -eq 0 ]; then
+        echo "Set password expire to accounts in cos ${COS} successfuly."
         exit 0
     else
-        exit 1
+        echo "Set password expire to accounts in cos ${COS} successfuly."
+        exit $?
     fi
 }
 # Procesod e argumentos
