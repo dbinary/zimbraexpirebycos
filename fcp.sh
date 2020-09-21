@@ -20,6 +20,10 @@ usage() {
 }
 
 showCos() {
+    # List all COS
+    /opt/zimbra/bin/zmprov gac > /tmp/cos.zmprov
+    # Get all COS IDS
+    while read cos; do echo -e "gc ${cos} zimbraId";done < /tmp/cos.zmprov|zmprov > /tmp/cosids.txt
     for cos in $(zmprov gac); do
         echo -ne "${cos}: "
         /opt/zimbra/bin/zmprov gc ${cos} zimbraId | grep -oE "\w{8}\-(\w{4}\-){3}\w{12}"
