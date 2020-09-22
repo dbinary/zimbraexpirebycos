@@ -47,21 +47,21 @@ setExpire() {
     /opt/zimbra/bin/zmprov < ${SPASSF}
     if [ $? -eq 0 ]; then
         echo "Set temporal password to accounts in cos ${COS} successfuly."
-        exit 0
+        echo "Setting expire password"
+        /opt/zimbra/bin/zmprov < ${MCHANGE}
+        if [ $? -eq 0 ]; then
+            echo "Set password expire to accounts in cos ${COS} successfuly."
+            exit 0
+        else
+            echo "Set password expire to accounts in cos ${COS} successfuly."
+            exit $?
+        fi
     else
         echo "Set temporal password to accounts in cos ${COS} successfuly."
         exit $?
     fi
-    echo "Setting expire password"
-    /opt/zimbra/bin/zmprov < ${MCHANGE}
-    if [ $? -eq 0 ]; then
-        echo "Set password expire to accounts in cos ${COS} successfuly."
-        exit 0
-    else
-        echo "Set password expire to accounts in cos ${COS} successfuly."
-        exit $?
-    fi
 }
+
 # Procesod e argumentos
 while getopts ":c:p: hevs" opt; do
     case ${opt} in
